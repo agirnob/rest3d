@@ -1,4 +1,6 @@
 package com.tau.rest3d.Owners;
 
-public interface OwnerRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface OwnerRepository extends JpaRepository<Owner,Long> {
 }
