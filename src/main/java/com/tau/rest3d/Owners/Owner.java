@@ -35,6 +35,7 @@ public class Owner {
     @Transient
     private Integer daysLeft;
 
+
     public Owner(String name, String email, LocalDate dateOfSignUp,String password ) throws NoSuchAlgorithmException {
 
         this.password = password;
