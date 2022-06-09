@@ -11,37 +11,37 @@ import java.util.regex.Pattern;
 public class UserService {
 
     private final String pathToFolder = "/home/agirnob/Documents/files/";
-    private final String regexPart = "[\\w,.-]+\\.gcode";
 
     public String[] uploadService(MultipartFile file) throws Exception {
         String absolutePath = makePath(file);
         file.transferTo(new File(absolutePath));
         System.out.println("start slicing");
-        //convertToStl(absolutePath);
+        convertToStl(absolutePath);
         System.out.println("finished converting");
         return information(readfile(file.getOriginalFilename()));
     }
 
     private String makePath(MultipartFile file) {
 
-        String pathToStlFile = pathToFolder + file.getOriginalFilename();
-        return pathToStlFile;
+        return pathToFolder + file.getOriginalFilename();
     }
 
     private void convertToStl(String pathToStlFile) throws Exception {
         Runtime rt = Runtime.getRuntime();
         Process pr = rt.exec("prusa-slicer -g --repair --load /home/agirnob/Documents/gaps.ini " + pathToStlFile);
         pr.waitFor();
-        int exitVal = pr.exitValue();
+
     }
 
-    private String getFile(String fileName) throws Exception {
+    private String getFile(String fileName) {
+        final String regexPart = "[\\w,. -]+\\.gcode";
         String regexPattern = fileName.substring(0, fileName.length() - 4) + regexPart;
         Pattern gcodeFilePattern = Pattern.compile(regexPattern);
         File folder = new File(pathToFolder);
         File[] files = folder.listFiles();
 
-        boolean boolMatch = false;
+        boolean boolMatch ;
+        assert files != null;
         for (File f : files) {
             Matcher matchGcode = gcodeFilePattern.matcher(f.getName());
             boolMatch = matchGcode.matches();
@@ -51,7 +51,7 @@ public class UserService {
                 return (f.getName());
             }
         }
-        return "file not found";
+        return "this file has not found";
 
     }
 
@@ -59,7 +59,7 @@ public class UserService {
         String gcodeFileName = getFile(filename);
         File file = new File(pathToFolder + gcodeFileName);
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-        StringBuffer stringBuffer = new StringBuffer();//because we want it mutuable
+        StringBuilder stringBuffer = new StringBuilder();//because we want it mutuable
         String line;
         while ((line = bufferedReader.readLine()) != null) {
             stringBuffer.append(line);
@@ -81,8 +81,7 @@ public class UserService {
         String CostfPrint = gCode.substring(indexOfTheSubStringCost + subStringTofindCost.length(), gCode.indexOf(';',indexOfTheSubStringCost));
         String GramOfPrint = gCode.substring(indexOfTheSubStringGram + subStringtoFindGram.length(),gCode.indexOf(';',indexOfTheSubStringGram));
 
-        String[] strArray = {timeOfPrint,CostfPrint,GramOfPrint};
-        return strArray;
+        return new String[]{timeOfPrint,CostfPrint,GramOfPrint};
     }
 
 }
