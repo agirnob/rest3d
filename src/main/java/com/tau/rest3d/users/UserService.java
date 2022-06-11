@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,12 +19,17 @@ public class UserService {
         System.out.println("start slicing");
         convertToStl(absolutePath);
         System.out.println("finished converting");
-        return information(readfile(file.getOriginalFilename()));
+        return information(readfile(Objects.requireNonNull(file.getOriginalFilename()).replace(' ','_')));
     }
 
+    //TODO make following methods a new class
     private String makePath(MultipartFile file) {
 
-        return pathToFolder + file.getOriginalFilename();
+        String st = Objects.requireNonNull(file.getOriginalFilename()).replace(' ','_');
+
+        System.out.println(st);
+
+        return pathToFolder + st;
     }
 
     private void convertToStl(String pathToStlFile) throws Exception {
@@ -40,7 +46,9 @@ public class UserService {
         File folder = new File(pathToFolder);
         File[] files = folder.listFiles();
 
-        boolean boolMatch ;
+
+
+        boolean boolMatch;
         assert files != null;
         for (File f : files) {
             Matcher matchGcode = gcodeFilePattern.matcher(f.getName());

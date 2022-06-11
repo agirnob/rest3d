@@ -20,9 +20,9 @@ public class UserController {
 
     public @ResponseBody PrintInfo uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
 
-        PrintInfo printInfo= new PrintInfo(userService.uploadService(file)[0],userService.uploadService(file)[1],userService.uploadService(file)[2]);
+        String[] str = userService.uploadService(file);
 
-        return printInfo;
+        return new PrintInfo(str[0],str[1],str[2]);
 
 
 
