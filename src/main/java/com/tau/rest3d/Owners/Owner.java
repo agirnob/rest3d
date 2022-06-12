@@ -73,7 +73,7 @@ public class Owner {
 
     public String getPassword() {
         //TODO make a hash code here
-        return "password";
+        return password;
     }
 
     public Integer getDaysLeft() {
